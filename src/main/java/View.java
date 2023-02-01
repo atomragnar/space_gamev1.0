@@ -20,34 +20,22 @@ public class View {
     private Screen screen;
     private final TextGraphics textGraphics;
     private  TerminalSize terminalSize;
-    private boolean isResizeNeeded;
+
     public View() throws IOException {
         terminal = null;
         terminal = defaultTerminalFactory.createTerminal();
         terminal.clearScreen();
         terminal.setCursorVisible(false);
-        this.textGraphics = terminal.newTextGraphics();
-        setScreen();
-        terminalSize = screen.getTerminalSize();
-        isResizeNeeded = false;
-        /*TerminalResizeListener resizeListener = new TerminalResizeListener() {
-            @Override
-            public void onResized(Terminal terminal, TerminalSize newSize) {
-                isResizeNeeded = true;
-            }
-        };
-        terminal.addResizeListener(resizeListener);*/
-    }
-
-    public boolean isResizeNeeded() {
-        return isResizeNeeded;
-    }
-
-    public void setScreen() throws IOException {
+        //this.textGraphics = terminal.newTextGraphics();
         screen = new TerminalScreen(this.terminal);
+        this.textGraphics = screen.newTextGraphics();
         screen.startScreen();
+        terminalSize = screen.getTerminalSize();
+
 
     }
+
+
 
     public void drawLinesGame() {
         TextCharacter lines = new TextCharacter('|', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK);
@@ -69,9 +57,7 @@ public class View {
                     } else {
                         screen.setCharacter(j, i, lines);
                     }
-                } /*else if (j == left || j == right) {
-                    screen.setCharacter(j, i, new TextCharacter('-', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK));
-                }*/
+                }
             }
         }
 
@@ -79,7 +65,6 @@ public class View {
 
 
     public void drawScreen() throws IOException {
-        //resizeTerminal();
         drawLinesGame();
         drawHero();
         if (!GameVariables.isEnemySpawned) {
@@ -88,6 +73,12 @@ public class View {
             GameVariables.moveEnemy();
             drawEnemy();
         }
+        drawBackground();
+        screen.refresh();
+    }
+
+
+    public void drawBackground() {
         int middle = getColumns() / 2;
         int right = middle + GameVariables.rightOffset;
         int left = middle - GameVariables.leftOffset;
@@ -124,13 +115,11 @@ public class View {
                 }
             }
         }
-        screen.refresh();
     }
 
     public void drawHero() throws IOException {
         TextCharacter heroShip = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
-        screen.setCharacter(GameVariables.heroPositionColumn1, GameVariables.heroPositionRow1, heroShip);
-        screen.setCharacter(GameVariables.heroPositionColumn2, GameVariables.heroPositionRow2, heroShip);
+        screen.setCharacter(GameVariables.getPlayerPosition(), GameVariables.heroPositionRow, heroShip);
         if (GameVariables.checkDeath()) {
             this.terminal.close(); // lägg in Game over etc längre fram
         }
@@ -158,6 +147,7 @@ public class View {
         }
     }
 
+    // @TODO kan man anvanda som grund till en Game over skarm som sen skiftar
     public void modifyScreen() throws IOException {
         long startTime = System.currentTimeMillis();
         while(System.currentTimeMillis() - startTime < 5000) {
@@ -182,7 +172,9 @@ public class View {
                 random.nextInt(terminalSize.getRows()));
     }*/
 
-    public void drawBox() throws IOException {
+
+    // @TODO hur man kan skapa box i skarmen eventuellt for poang rakning etc
+    /*public void drawBox() throws IOException {
 
         String sizeLabel = "Terminal Size: " + terminalSize;
         TerminalPosition labelBoxTopLeft = new TerminalPosition(1, 1);
@@ -209,40 +201,34 @@ public class View {
         screen.refresh();
         Thread.yield();
 
-    }
+    }*/
 
 
     public KeyType getKeyInput() throws IOException {
         while (true) {
-            KeyStroke keyStroke = screen.pollInput();
-            if (keyStroke != null && (keyStroke.getKeyType() == KeyType.ArrowLeft || keyStroke.getKeyType() == KeyType.ArrowRight
-            || keyStroke.getKeyType() == KeyType.Escape)) {
-                return keyStroke.getKeyType();
+            try {
+                Thread.sleep(15);
+                KeyStroke keyStroke = screen.pollInput();
+                if (keyStroke != null && (keyStroke.getKeyType() == KeyType.ArrowLeft || keyStroke.getKeyType() == KeyType.ArrowRight
+                || keyStroke.getKeyType() == KeyType.Escape)) {
+                    return keyStroke.getKeyType();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    public void resizeTerminal() {
+    /*public void resizeTerminal() {
         TerminalSize newSize = screen.doResizeIfNecessary();
         if(newSize != null) {
             terminalSize = newSize;
             GameVariables.scaleBorders(terminalSize.getColumns());
         }
-    }
-
+    }*/
+    // @TODO Behover uppdateras sa man helt stanger av spelet
     public void shutDown() throws IOException {
-        terminal.close();
-    }
-    public Screen getScreen() {
-        return screen;
-    }
-
-    public Terminal getTerminal() {
-        return terminal;
-    }
-
-    public TextGraphics getTextGraphics() {
-        return textGraphics;
+        System.exit(0);
     }
 
     public int getColumns() {
@@ -255,6 +241,7 @@ public class View {
         this.terminal.flush();
     }
 
+    // @TODO Hur man kan formatera texter
     public void displayTerminalSize() throws IOException {
         textGraphics.drawLine(5, 4, terminal.getTerminalSize().getColumns() - 1, 4, ' ');
         textGraphics.putString(5, 4, terminal.getTerminalSize().toString(), SGR.BOLD);

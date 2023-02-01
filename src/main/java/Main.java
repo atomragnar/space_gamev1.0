@@ -21,19 +21,16 @@ public class Main implements Runnable {
     }
     public static void main(String[] args) throws IOException {
         Main main = new Main();
+        GameVariables gameVariables = new GameVariables();
         boolean gameOn = true;
 
         view = new View();
         GameVariables.setInitialsLimits(view.getColumns());
 
         while (gameOn) {
-            if (view.isResizeNeeded()) {
-                // hantera resize
-            }
             main.start();
             switch (view.getKeyInput()) {
-                case ArrowLeft -> GameVariables.moveLeft();
-                case ArrowRight -> GameVariables.moveRight();
+                case ArrowLeft, ArrowRight -> GameVariables.movePlayer(view.getKeyInput());
                 case Escape -> gameOn = false;
             }
         }
