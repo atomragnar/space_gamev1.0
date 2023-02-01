@@ -21,14 +21,15 @@ public class View {
     private final TextGraphics textGraphics;
     private  TerminalSize terminalSize;
 
+
     public View() throws IOException {
         terminal = null;
         terminal = defaultTerminalFactory.createTerminal();
         terminal.clearScreen();
         terminal.setCursorVisible(false);
-        //this.textGraphics = terminal.newTextGraphics();
+        this.textGraphics = terminal.newTextGraphics();
         screen = new TerminalScreen(this.terminal);
-        this.textGraphics = screen.newTextGraphics();
+        //this.textGraphics = screen.newTextGraphics();
         screen.startScreen();
         terminalSize = screen.getTerminalSize();
 
@@ -89,25 +90,17 @@ public class View {
                 left--;
             }
             for(int j = 0; j < terminalSize.getColumns(); j++) {
-                if ((j > left && j < right) && i > GameVariables.cutOffRow) {
+                if (((j > left && j < right) && i > GameVariables.cutOffRow)
+                || i == Main.player.getPlayerX() && j == Main.player.getPlayerY()) {
                     continue;
                 } else if (i == 5 && j == middle) {
-                    /*screen.setCharacter(j, i, new TextCharacter(
-                            Character.forDigit(GameVariables.points, 10),
-                            TextColor.ANSI.WHITE,
-                            TextColor.ANSI.BLACK));*/
                     textGraphics.putString(j,i, String.valueOf(GameVariables.points));
                 } else if (j % 6 == 0) {
                     screen.setCharacter(j, i, new TextCharacter(
                             '|',
                             TextColor.ANSI.WHITE,
                             TextColor.ANSI.BLACK));
-                } /*else if (j % 10 == 0) {
-                    screen.setCharacter(j, i, new TextCharacter(
-                            '~',
-                            TextColor.ANSI.WHITE,
-                            TextColor.ANSI.BLACK));
-                }*/ else {
+                }  else {
                     screen.setCharacter(j, i, new TextCharacter(
                             ' ',
                             TextColor.ANSI.WHITE,
@@ -119,9 +112,9 @@ public class View {
 
     public void drawHero() throws IOException {
         TextCharacter heroShip = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
-        screen.setCharacter(GameVariables.getPlayerPosition(), GameVariables.heroPositionRow, heroShip);
+        screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), heroShip);
         if (GameVariables.checkDeath()) {
-            this.terminal.close(); // lägg in Game over etc längre fram
+            this.terminal.close();
         }
 
     }
