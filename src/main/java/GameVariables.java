@@ -8,11 +8,12 @@ public class GameVariables {
     public static int points = 0;
     public static Character pointsChar = Character.forDigit(points, 10);
     public final static int cutOffRow = 10;
+    public static final int enemyStartPositonRow = 10;
     public static int leftOffset = 0;
     public static int rightOffset = 0;
     public static int leftLimit = 15;
     public static int rightLimit = 65;
-    public static final int enemyStartPositonRow = cutOffRow;
+
     public static int enemyPositionCol;
     public static int enemyPositionRow;
     public static boolean isEnemySpawned = false;

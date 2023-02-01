@@ -65,14 +65,15 @@ public class View {
     }
 
 
-    public void drawScreen() throws IOException {
+    public void drawScreen(Enemy enemyShip) throws IOException {
         drawLinesGame();
         drawHero();
         if (!GameVariables.isEnemySpawned) {
-            spawnEnemy();
+            enemyShip = new EnemyUFO();
+            spawnEnemy(enemyShip);
         } else {
-            GameVariables.moveEnemy();
-            drawEnemy();
+            enemyShip.move();
+            drawEnemy(enemyShip);
         }
         drawBackground();
         screen.refresh();
@@ -119,23 +120,19 @@ public class View {
 
     }
 
-    public void spawnEnemy(){
-        int leftLimit = (terminalSize.getColumns() / 2) - GameVariables.cutOffRow;
-        int rightLimit = (terminalSize.getColumns() / 2) + GameVariables.cutOffRow;
-        int random = new Random().nextInt(leftLimit, rightLimit);
-        TextCharacter enemy = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
-        screen.setCharacter(random, GameVariables.enemyStartPositonRow, enemy);
-        GameVariables.enemyPositionCol = random;
-        GameVariables.enemyPositionRow = GameVariables.enemyStartPositonRow;
+    public void spawnEnemy(Enemy enemyShip){
+        TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
+        screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
         GameVariables.isEnemySpawned = true;
 
     }
 
-    public void drawEnemy() {
-        TextCharacter enemy = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
-        screen.setCharacter(GameVariables.enemyPositionCol, GameVariables.enemyPositionRow, enemy);
-        if (GameVariables.enemyPositionRow == terminalSize.getRows()) {
+    public void drawEnemy(Enemy enemyShip) {
+        TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
+        screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
+        if (enemyShip.getPositionY() == terminalSize.getRows()) {
             GameVariables.isEnemySpawned = false;
+            enemyShip = null;
             GameVariables.points++;
         }
     }
@@ -154,7 +151,6 @@ public class View {
             catch(InterruptedException ignore) {
                 break;
             }
-            drawScreen();
         }
     }
 

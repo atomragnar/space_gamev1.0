@@ -15,8 +15,8 @@ public class Main implements Runnable {
     public static boolean run = false;
     public Thread thread;
     public static View view = null;
-
-   public static Player player = null;
+    public static Player player = null;
+    public static Enemy enemy = null;
 
     public Main() {
 
@@ -24,9 +24,7 @@ public class Main implements Runnable {
     public static void main(String[] args) throws IOException {
 
         Main main = new Main();
-
         player = new Player();
-
         boolean gameOn = true;
 
         view = new View();
@@ -54,7 +52,10 @@ public class Main implements Runnable {
         while (run) {
             try {
                 Thread.sleep(200);
-                view.drawScreen();
+                if (enemy == null || !GameVariables.isEnemySpawned) {
+                    enemy = new EnemyUFO();
+                }
+                view.drawScreen(enemy);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
