@@ -1,3 +1,8 @@
+package gamecharacters;
+
+import static gameutils.Constants.*;
+import gameutils.Position;
+
 public abstract class Enemy {
 
     Position position;

@@ -1,3 +1,5 @@
+package gameutils;
+
 public class Position {
 
     private int x;

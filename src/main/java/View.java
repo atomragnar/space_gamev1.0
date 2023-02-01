@@ -1,3 +1,5 @@
+import gamecharacters.Enemy;
+import gamecharacters.EnemyUFO;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -6,11 +8,14 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.terminal.TerminalResizeListener;
-import org.w3c.dom.Text;
-
+import static gameutils.Constants.*;
+import static gameutils.GameGraphics.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
+
+// TODO kan behova satta en method for att uppdatera terminalsize lopande.
+
 
 public class View {
 
@@ -18,50 +23,60 @@ public class View {
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
-    private final TextGraphics textGraphics;
     private  TerminalSize terminalSize;
 
 
     public View() throws IOException {
         terminal = null;
-        terminal = defaultTerminalFactory.createTerminal();
-        terminal.clearScreen();
+        this.terminalSize = new TerminalSize(100, 40);
+        terminal = defaultTerminalFactory
+                .setInitialTerminalSize(this.terminalSize)
+                .createTerminal();
+        terminal.clearScreen(); // #TODO Test om denna veckligen behovs
         terminal.setCursorVisible(false);
-        this.textGraphics = terminal.newTextGraphics();
+        //this.textGraphics = terminal.newTextGraphics();
         screen = new TerminalScreen(this.terminal);
-        //this.textGraphics = screen.newTextGraphics();
         screen.startScreen();
-        terminalSize = screen.getTerminalSize();
-
 
     }
 
 
 
     public void drawLinesGame() {
-        TextCharacter lines = new TextCharacter('|', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK);
-        int middle = getColumns() / 2;
-        int right = middle + GameVariables.rightOffset;
-        int left = middle - GameVariables.leftOffset;
+        int right = RIGHT_BORDER_LIMIT;
+        int left = LEFT_BORDER_LIMIT;
         for (int i = 0; i < terminalSize.getRows(); i++) {
-            if (i % 1 == 0) {
+            if (i % 2 == 0) {
                 right++;
                 left--;
             }
             for (int j = 0; j < terminalSize.getColumns(); j++) {
-                if (j > left && j < right) {
-                    if (i < GameVariables.cutOffRow) {
-                        screen.setCharacter(j, i, new TextCharacter(
-                                ' ',
-                                TextColor.ANSI.BLACK,
-                                TextColor.ANSI.BLACK));
+                drawPointsCount();
+                if (i < CUT_OFF_ROW) {
+                    int random = new Random().nextInt(left, right);
+                    if (random == j) {
+                        screen.setCharacter(j, i, MIDDLE_BOX_SPACE);
                     } else {
-                        screen.setCharacter(j, i, lines);
+                        screen.setCharacter(j, i, TextCharAllBlack);
                     }
+                } else if (j > left && j < right) {
+                    int random = new Random().nextInt(left, right);
+                    if (random == j) {
+                        screen.setCharacter(j, i, MIDDLE_LINE_SPACE);
+                    } else {
+                        screen.setCharacter(j, i, linesGraphic);
+                    }
+
                 }
             }
         }
 
+    }
+
+    public void drawPointsCount() {
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+        textGraphics.putString(MIDDLE, 5, String.valueOf(GameVariables.points), SGR.BOLD, SGR.BLINK);
     }
 
 
@@ -81,39 +96,47 @@ public class View {
 
 
     public void drawBackground() {
-        int middle = getColumns() / 2;
-        int right = middle + GameVariables.rightOffset;
-        int left = middle - GameVariables.leftOffset;
+        int random;
+        int right = RIGHT_BORDER_LIMIT;
+        int left = LEFT_BORDER_LIMIT;
 
         for(int i = 0; i < terminalSize.getRows(); i++) {
-            if (i % 1 == 0) {
+            if (i % 2 == 0) {
                 right++;
                 left--;
             }
             for(int j = 0; j < terminalSize.getColumns(); j++) {
-                if (((j > left && j < right) && i > GameVariables.cutOffRow)
-                || i == Main.player.getPlayerX() && j == Main.player.getPlayerY()) {
-                    continue;
-                } else if (i == 5 && j == middle) {
-                    textGraphics.putString(j,i, String.valueOf(GameVariables.points));
-                } else if (j % 6 == 0) {
-                    screen.setCharacter(j, i, new TextCharacter(
-                            '|',
-                            TextColor.ANSI.WHITE,
-                            TextColor.ANSI.BLACK));
-                }  else {
-                    screen.setCharacter(j, i, new TextCharacter(
-                            ' ',
-                            TextColor.ANSI.WHITE,
-                            TextColor.ANSI.BLACK));
+                if (j <= left) {
+                    random = new Random().nextInt(1, left);
+                    if (random == j) {
+                        screen.setCharacter(j, i, LEFT_SIDE_SPACE);
+                    } else {
+                        screen.setCharacter(j, i, TextCharAllBlack);
+                    }
+                }  else if (j >= right) {
+                    random = new Random().nextInt(right, terminalSize.getColumns());
+                    if (random == j) {
+                        screen.setCharacter(j, i, RIGHT_SIDE_SPACE);
+                    } else {
+                        screen.setCharacter(j, i, TextCharAllBlack);
+                    }
                 }
             }
         }
     }
 
     public void drawHero() throws IOException {
-        TextCharacter heroShip = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
-        screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), heroShip);
+        //TextCharacter heroShip = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
+        //screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), heroShip);
+        int y = Main.player.getPlayerY();
+        int x = Main.player.getPlayerX();
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
+        textGraphics.putString(x, y, Main.player.getPlayerString1(),SGR.BOLD);
+        textGraphics.putString(x, y + 1, Main.player.getPlayerString2(), SGR.BOLD);
+        textGraphics.putString(x, y + 2, Main.player.getPlayerString3(), SGR.BOLD);
+        textGraphics.putString(x, y + 3, Main.player.getPlayerString4(), SGR.BOLD);
+        textGraphics.putString(x, y + 4, Main.player.getPlayerstring5(), SGR.BOLD);
         if (GameVariables.checkDeath()) {
             this.terminal.close();
         }
@@ -132,7 +155,6 @@ public class View {
         screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
         if (enemyShip.getPositionY() == terminalSize.getRows()) {
             GameVariables.isEnemySpawned = false;
-            enemyShip = null;
             GameVariables.points++;
         }
     }
@@ -224,73 +246,5 @@ public class View {
         return this.terminalSize.getColumns();
     }
 
-    public void setInitialTextGraphics() throws IOException {
-        this.textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
-        this.textGraphics.setBackgroundColor(TextColor.ANSI.BLACK);
-        this.terminal.flush();
-    }
-
-    // @TODO Hur man kan formatera texter
-    public void displayTerminalSize() throws IOException {
-        textGraphics.drawLine(5, 4, terminal.getTerminalSize().getColumns() - 1, 4, ' ');
-        textGraphics.putString(5, 4, terminal.getTerminalSize().toString(), SGR.BOLD);
-    }
-
-    public void putChar(int col, int row, char c,
-                        TextColor foreGround, TextColor backGround) {
-        try {
-            terminal.setCursorPosition(col, row);
-            terminal.setForegroundColor(foreGround);
-            terminal.setBackgroundColor(backGround);
-            terminal.putCharacter(c);
-            terminal.flush();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-   /* public void setAndDrawSpaceShipLane() throws IOException {
-        TextCharacter lines = new TextCharacter(' ', TextColor.ANSI.MAGENTA, TextColor.ANSI.MAGENTA);
-        int test = 0;
-        int scale = 0;
-        for (int i = 0; 0 < gameState.length; i++) {
-            if (test == 5) {
-                test = 0;
-                scale--;
-            }
-            for (int j = 0; j < gameState[0].length; j++) {
-                if (j != leftLimit + Math.abs(scale) || j != rightLimit + scale) {
-                    continue;
-                } else if (j == leftLimit + Math.abs(scale)) {
-                    gameState[i][leftLimit + Math.abs(scale)] = GameVariables.BORDER_VALUE;
-                    screen.setCharacter(leftLimit + Math.abs(scale), i, lines);
-                    if (i == 0) {
-                        GameVariables.leftLimitStartX = leftLimit + Math.abs(scale);
-                        GameVariables.leftLimitStartY = i;
-                    } else if (i == gameState.length - 1) {
-                        GameVariables.leftLimitEndX = leftLimit + Math.abs(scale);
-                        GameVariables.leftLimitSEndY = i;
-                    }
-                } else if (j == rightLimit + scale) {
-                    gameState[i][leftLimit + scale] = GameVariables.BORDER_VALUE;
-                    screen.setCharacter((rightLimit + scale), i, lines);
-                    if (i == 0) {
-                        GameVariables.rightLimitStartX = rightLimit + scale;
-                        GameVariables.rightLimitStartY = i;
-                    } else if (i == gameState.length - 1) {
-                        GameVariables.rightLimitEndX = rightLimit + scale;
-                        GameVariables.rightLimitSEndY = i;
-                    }
-                }
-            }
-            test++;
-        }
-        *//*textGraphics.drawLine(GameVariables.leftLimitStartX, GameVariables.leftLimitStartY, GameVariables.leftLimitEndX, GameVariables.leftLimitSEndY,
-                new TextCharacter(' ', TextColor.RGB.ANSI.MAGENTA_BRIGHT, TextColor.RGB.ANSI.MAGENTA_BRIGHT));
-        textGraphics.drawLine(GameVariables.rightLimitStartX, GameVariables.rightLimitStartY, GameVariables.rightLimitEndX, GameVariables.rightLimitSEndY,
-                new TextCharacter(' ', TextColor.RGB.ANSI.MAGENTA_BRIGHT, TextColor.RGB.ANSI.MAGENTA_BRIGHT));*//*
-        screen.refresh();
-    }*/
 
 }

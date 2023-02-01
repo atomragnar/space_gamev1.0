@@ -2,17 +2,19 @@ import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyType;
 
+import java.util.Map;
+
 public class GameVariables {
 
+    Map<Integer, String> GameState;
 
     public static int points = 0;
     public static Character pointsChar = Character.forDigit(points, 10);
-    public final static int cutOffRow = 10;
-    public static final int enemyStartPositonRow = 10;
+
+
     public static int leftOffset = 0;
     public static int rightOffset = 0;
-    public static int leftLimit = 15;
-    public static int rightLimit = 65;
+
 
     public static int enemyPositionCol;
     public static int enemyPositionRow;

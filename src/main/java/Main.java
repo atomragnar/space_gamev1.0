@@ -1,12 +1,6 @@
-import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.TextColor.*;
-import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
+import gamecharacters.Enemy;
+import gamecharacters.EnemyUFO;
+import gamecharacters.Player;
 
 import java.io.IOException;
 
@@ -26,6 +20,7 @@ public class Main implements Runnable {
         Main main = new Main();
         player = new Player();
         boolean gameOn = true;
+
 
         view = new View();
 
@@ -51,7 +46,7 @@ public class Main implements Runnable {
     public void run() {
         while (run) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(20);
                 if (enemy == null || !GameVariables.isEnemySpawned) {
                     enemy = new EnemyUFO();
                 }
