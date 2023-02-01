@@ -8,11 +8,15 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+
 import static gameutils.Constants.*;
 import static gameutils.GameGraphics.*;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
+
+import static gameutils.Constants.*;
 
 // TODO kan behova satta en method for att uppdatera terminalsize lopande.
 
@@ -23,7 +27,7 @@ public class View {
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
-    private  TerminalSize terminalSize;
+    private TerminalSize terminalSize;
 
 
     public View() throws IOException {
@@ -39,7 +43,6 @@ public class View {
         screen.startScreen();
 
     }
-
 
 
     public void drawLinesGame() {
@@ -70,7 +73,6 @@ public class View {
                 }
             }
         }
-
     }
 
     public void drawPointsCount() {
@@ -81,8 +83,10 @@ public class View {
 
 
     public void drawScreen(Enemy enemyShip) throws IOException {
-        drawLinesGame();
+        drawSpace();
+        screen.refresh();
         drawHero();
+        screen.refresh();
         if (!GameVariables.isEnemySpawned) {
             enemyShip = new EnemyUFO();
             spawnEnemy(enemyShip);
@@ -90,7 +94,6 @@ public class View {
             enemyShip.move();
             drawEnemy(enemyShip);
         }
-        drawBackground();
         screen.refresh();
     }
 
@@ -100,12 +103,12 @@ public class View {
         int right = RIGHT_BORDER_LIMIT;
         int left = LEFT_BORDER_LIMIT;
 
-        for(int i = 0; i < terminalSize.getRows(); i++) {
+        for (int i = 0; i < terminalSize.getRows(); i++) {
             if (i % 2 == 0) {
                 right++;
                 left--;
             }
-            for(int j = 0; j < terminalSize.getColumns(); j++) {
+            for (int j = 0; j < terminalSize.getColumns(); j++) {
                 if (j <= left) {
                     random = new Random().nextInt(1, left);
                     if (random == j) {
@@ -113,7 +116,7 @@ public class View {
                     } else {
                         screen.setCharacter(j, i, TextCharAllBlack);
                     }
-                }  else if (j >= right) {
+                } else if (j >= right) {
                     random = new Random().nextInt(right, terminalSize.getColumns());
                     if (random == j) {
                         screen.setCharacter(j, i, RIGHT_SIDE_SPACE);
@@ -131,19 +134,28 @@ public class View {
         int y = Main.player.getPlayerY();
         int x = Main.player.getPlayerX();
         TextGraphics textGraphics = screen.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
-        textGraphics.putString(x, y, Main.player.getPlayerString1(),SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
+        textGraphics.putString(x, y, Main.player.getPlayerString1(), SGR.BOLD);
         textGraphics.putString(x, y + 1, Main.player.getPlayerString2(), SGR.BOLD);
         textGraphics.putString(x, y + 2, Main.player.getPlayerString3(), SGR.BOLD);
         textGraphics.putString(x, y + 3, Main.player.getPlayerString4(), SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
         textGraphics.putString(x, y + 4, Main.player.getPlayerstring5(), SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
+        textGraphics.putString(x, y + 5, Main.player.getPlayerstring6(), SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+        textGraphics.putString(x, y + 6, Main.player.getPlayerstring7(), SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+        textGraphics.putString(x, y + 7, Main.player.getPlayerstring8(), SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
+        textGraphics.putString(x, y + 8, Main.player.getPlayerstring9(), SGR.BOLD);
         if (GameVariables.checkDeath()) {
             this.terminal.close();
         }
 
     }
 
-    public void spawnEnemy(Enemy enemyShip){
+    public void spawnEnemy(Enemy enemyShip) {
         TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
         screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
         GameVariables.isEnemySpawned = true;
@@ -162,15 +174,14 @@ public class View {
     // @TODO kan man anvanda som grund till en Game over skarm som sen skiftar
     public void modifyScreen() throws IOException {
         long startTime = System.currentTimeMillis();
-        while(System.currentTimeMillis() - startTime < 5000) {
+        while (System.currentTimeMillis() - startTime < 5000) {
             // The call to pollInput() is not blocking, unlike readInput()
-            if(screen.pollInput() != null) {
+            if (screen.pollInput() != null) {
                 break;
             }
             try {
                 Thread.sleep(1);
-            }
-            catch(InterruptedException ignore) {
+            } catch (InterruptedException ignore) {
                 break;
             }
         }
@@ -221,7 +232,8 @@ public class View {
                 Thread.sleep(15);
                 KeyStroke keyStroke = screen.pollInput();
                 if (keyStroke != null && (keyStroke.getKeyType() == KeyType.ArrowLeft || keyStroke.getKeyType() == KeyType.ArrowRight
-                || keyStroke.getKeyType() == KeyType.Escape)) {
+                        || keyStroke.getKeyType() == KeyType.Escape || keyStroke.getKeyType() == KeyType.ArrowUp
+                || keyStroke.getKeyType() == KeyType.ArrowDown)) {
                     return keyStroke.getKeyType();
                 }
             } catch (InterruptedException e) {
@@ -242,9 +254,149 @@ public class View {
         System.exit(0);
     }
 
-    public int getColumns() {
-        return this.terminalSize.getColumns();
+    public void drawTopMiddleLines() {
+        int right = COLUMN_CUTOFF_RIGHT;
+        int left = COLUMN_CUTOFF_LEFT;
+        for (int i = 0; i < MIDDLE_ROW_VALUE; i++) {
+            right--;
+            left++;
+            for (int j = left; j < right; j++) {
+                int random = new Random().nextInt(left, right);
+                if (random == j) {
+                    screen.setCharacter(j, i, MIDDLE_LINE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+        }
     }
 
+    public void drawBottomMiddleLines() {
+        int right = COLUMN_CUTOFF_RIGHT;
+        int left = COLUMN_CUTOFF_LEFT;
+        int start = terminalSize.getRows();
+        for (int i = start; i > MIDDLE_ROW_VALUE; i--) {
+            right--;
+            left++;
+            for (int j = left; j < right; j++) {
+                int random = new Random().nextInt(left, right);
+                if (random == j) {
+                    screen.setCharacter(j, i, MIDDLE_LINE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+        }
+    }
+
+    public void drawMiddleMidLeftLines() {
+        for (int i = ROW_CUTOFF_TOP; i <= ROW_CUTOFF_BOTTOM; i++) {
+            for (int j = 0; j < MIDDLE; j++) {
+                int random = new Random().nextInt(0, MIDDLE);
+                if (random == j) {
+                    screen.setCharacter(j, i, MIDDLE_LEFT);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+
+        }
+    }
+
+    public void drawMiddleMidRightLines() {
+        int columns = terminalSize.getColumns();
+        for (int i = ROW_CUTOFF_TOP; i <= ROW_CUTOFF_BOTTOM; i++) {
+            for (int j = MIDDLE; j < columns; j++) {
+                int random = new Random().nextInt(MIDDLE, columns);
+                if (random == j) {
+                    screen.setCharacter(j, i, MIDDLE_RIGHT);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+
+        }
+    }
+
+    public void drawTopLeftCornerLines() {
+        int columns = COLUMN_CUTOFF_LEFT;
+        for (int i = 0; i < ROW_CUTOFF_TOP; i++) {
+            for (int j = 0; j < columns; j++) {
+                int random = new Random().nextInt(0, columns);
+                if (random == j) {
+                    screen.setCharacter(j, i, RIGHT_SIDE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+            columns += 2;
+        }
+    }
+
+    public void drawBottomLeftCorner() {
+        int columns = COLUMN_CUTOFF_LEFT;
+        int rows = terminalSize.getRows();
+        for (int i = ROW_CUTOFF_BOTTOM; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                int random = new Random().nextInt(0, columns);
+                if (random == j) {
+                    screen.setCharacter(j, i, LEFT_SIDE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+            columns += 2;
+        }
+    }
+
+    public void drawTopRightCorner() {
+        int columns = COLUMN_CUTOFF_RIGHT;
+        int totalColumns = terminalSize.getColumns();
+        for (int i = 0; i < ROW_CUTOFF_TOP; i++) {
+            for (int j = columns; j < totalColumns; j++) {
+                int random = new Random().nextInt(columns, totalColumns);
+                if (random == j) {
+                    screen.setCharacter(j, i, LEFT_SIDE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+            columns -= 2;
+        }
+    }
+
+    public void drawBottomRightCorner() {
+        int totalRows = terminalSize.getRows();
+        int totalColumns = terminalSize.getColumns();
+        int columns = COLUMN_CUTOFF_RIGHT;
+        for (int i = totalRows; i > ROW_CUTOFF_BOTTOM; i--) {
+            for (int j = columns; j < totalColumns; j++) {
+                int random = new Random().nextInt(columns, totalColumns);
+                if (random == j) {
+                    screen.setCharacter(j, i, RIGHT_SIDE_SPACE);
+                } else {
+                    screen.setCharacter(j, i, TextCharAllBlack);
+                }
+            }
+            columns -= 2;
+        }
+    }
+
+    public void drawSpace() {
+        drawTopMiddleLines();
+        drawBottomMiddleLines();
+        drawMiddleMidLeftLines();
+        drawMiddleMidRightLines();
+        drawTopLeftCornerLines();
+        drawBottomLeftCorner();
+        drawTopRightCorner();
+        drawBottomRightCorner();
+
+    }
 
 }
+
+
+
+
+

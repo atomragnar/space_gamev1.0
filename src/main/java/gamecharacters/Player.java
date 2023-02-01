@@ -7,20 +7,38 @@ import gameutils.Position;
 public class Player {
 
     private final static int PLAYER_START_COLUMN = 45;
-    private final static int PLAYER_START_ROW = 33;
+    private final static int PLAYER_START_ROW = 18;
 
-    String playerString1 = "   /\\";
-    String playerString2 = "  (||)";
-    String playerString3 = "  (||)";
-    String playerString4 = " /|/\\|\\";
-    String playerstring5 = "/_||||_\\";
-
-    String playerstring6 = "";
+    String playerString1 = "                  __|__";
+    String playerString2 = "                   _|_";
+    String playerString3 = "                  /#_#\\";
+    String playerString4 = "               __/#(_)#\\__";
+    String playerstring5 = "          ____/_ ======= _\\____";
+    String playerstring6 = " ________/#_#\\(_)_______(_)/#_#\\________";
+    String playerstring7 = "<___+____#(_)#|#/###_###\\#|#(_)#____+___>";
+    String playerstring8 = "  O O O  \\___/ |###(_)###| \\___/ O O O";
+    String playerstring9 = "             \\__\\_______/__/";
 
     private Position position;
 
     public Player() {
         this.position = new Position(PLAYER_START_COLUMN, PLAYER_START_ROW);
+    }
+
+    public String getPlayerstring6() {
+        return playerstring6;
+    }
+
+    public String getPlayerstring7() {
+        return playerstring7;
+    }
+
+    public String getPlayerstring8() {
+        return playerstring8;
+    }
+
+    public String getPlayerstring9() {
+        return playerstring9;
     }
 
     public String getPlayerString1() {
@@ -34,6 +52,7 @@ public class Player {
     public String getPlayerString3() {
         return playerString3;
     }
+
 
     public String getPlayerString4() {
         return playerString4;
@@ -52,16 +71,30 @@ public class Player {
     }
 
     public void moveLeft() {
-        if (position.getX() > LEFT_BORDER_LIMIT - 15) {
+        if (position.getX() > 10) {
             int x = position.getX() - 1;
             position.updatePositon(x, position.getY());
         }
     }
 
     public void moveRight() {
-        if (position.getX() < RIGHT_BORDER_LIMIT + 15) {
+        if (position.getX() < 80) {
             int x = position.getX() + 1;
             position.updatePositon(x, position.getY());
+        }
+    }
+
+    public void moveUp() {
+        if (position.getY() > 5) {
+            int y = position.getY() - 1;
+            position.updatePositon(position.getX(), y);
+        }
+    }
+
+    public void moveDown() {
+        if (position.getY() < 70) {
+            int y = position.getY() + 1;
+            position.updatePositon(position.getX(), y);
         }
     }
 
@@ -71,3 +104,10 @@ public class Player {
 
 
 }
+
+/*
+
+//-A-\\
+  ___---=======---___
+          (=__\   /.. ..\   /__=)
+          ---\__O__/---*/

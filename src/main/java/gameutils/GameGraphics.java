@@ -29,6 +29,22 @@ public class GameGraphics {
 
 
     public final static TextCharacter MIDDLE_BOX_SPACE = new TextCharacter(
+            '|',
+            TextColor.ANSI.WHITE,
+            TextColor.ANSI.BLACK);
+
+
+    public final static TextCharacter MIDDLE_ROW_MINUS = new TextCharacter(
+            '-',
+            TextColor.ANSI.WHITE,
+            TextColor.ANSI.BLACK);
+
+    public final static TextCharacter MIDDLE_LEFT = new TextCharacter(
+            '.',
+            TextColor.ANSI.WHITE,
+            TextColor.ANSI.BLACK);
+
+    public final static TextCharacter MIDDLE_RIGHT = new TextCharacter(
             '.',
             TextColor.ANSI.WHITE,
             TextColor.ANSI.BLACK);
