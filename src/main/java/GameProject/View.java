@@ -25,16 +25,15 @@ import java.util.Random;
 public class View {
 
 
-    private int playerPreviousY = 0;
-
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+    private int playerPreviousY = 0;
     private Terminal terminal;
     private Screen screen;
     private TerminalSize terminalSize;
 
 
     public View() throws IOException {
-        terminal = null;  // 168 80
+        terminal = null;  // 168 66
         this.terminalSize = new TerminalSize(168, 66);
         terminal = defaultTerminalFactory
                 .setInitialTerminalSize(this.terminalSize)
@@ -46,7 +45,6 @@ public class View {
         screen.startScreen();
 
     }
-
 
     public void drawLinesGame() {
         int right = getColRightCutOff();
@@ -82,16 +80,53 @@ public class View {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
 
-        textGraphics.putString(getMiddleColValue()-5, 1, "Score:", SGR.BOLD, SGR.BLINK);
-        if(GameVariables.points>9) {
+        textGraphics.putString(getMiddleColValue(), 1, "Score:", SGR.BOLD, SGR.BLINK);
+        int middleOneDigit = getMiddleColValue();
+        if (GameVariables.points > 9) {
+
             for (int i = 0; i < 9; i++) {
-                textGraphics.putString(getMiddleColValue() - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+                textGraphics.putString(middleOneDigit - 8, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
             }
+            middleOneDigit += 5;
         }
-            for (int i = 0; i < 9; i++) {
-                textGraphics.putString(getMiddleColValue()-6, i+3, Digit.values()[GameVariables.points%10].getRow(i), SGR.BOLD, SGR.BLINK);
+        for (int i = 0; i < 9; i++) {
+            textGraphics.putString(middleOneDigit, i + 3, Digit.values()[GameVariables.points % 10].getRow(i), SGR.BOLD, SGR.BLINK);
+        }
+
+        if (GameVariables.points > 0 && GameVariables.points % 10 == 0) {
+            String[] planet = new String[7];
+            planet[0] = "          ,MMM8&&&.";
+            planet[1] = "      _...MMMMM88&&&&..._";
+            planet[2] = " .::'''MMMMM88&&&&&&'''::.";
+            planet[3] = " ::     MMMMM88&&&&&&     ::";
+            planet[4] = " '::....MMMMM88&&&&&&....::'";
+            planet[5] = " `    ''''MMMMM88&&&&''''`";
+            planet[6] = "         'MMM8&&&'";
+            int i = 0;
+            for (var string : planet) {
+                textGraphics.putString(middleOneDigit - 45, i + 3, string, SGR.BOLD, SGR.BLINK);
+                i++;
             }
+        } else if (GameVariables.points > 0 && GameVariables.points % 5 == 0) {
+            String[] planet = new String[8];
+            planet[0] = "            ,";
+            planet[1] = "        \\  :  /";
+            planet[2] = "`      . __/ \\__ .'";
+            planet[3] = "      _ _\\     /_ _";
+            planet[4] = "         /_   _\\";
+            planet[5] = ".'         \\ /  `.";
+            planet[6] = "         /  :  \\    jbf";
+            planet[7] = "             .     ";
+            int i = 0;
+            for (var string : planet) {
+                textGraphics.putString(middleOneDigit + 45, i + 3, string, SGR.BOLD, SGR.BLINK);
+                i++;
+            }
+
+
     }
+
+}
 
 
     public void drawScreen(Enemy enemyShip) throws IOException {
@@ -188,7 +223,7 @@ public class View {
         textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
 
         for (var enemyString : enemyShip.getEnemyString()) {
-            textGraphics.putString(x, y, enemyString,SGR.BOLD);
+            textGraphics.putString(x, y, enemyString, SGR.BOLD);
             y++;
         }
 
@@ -248,6 +283,18 @@ public class View {
                 textGraphics.putString(col, row, s, SGR.BOLD);
                 row++;
             }
+
+            textGraphics.putString(getMiddleColValue(), 1, "Score:", SGR.BOLD, SGR.BLINK);
+            if (GameVariables.points > 9) {
+
+                for (int i = 0; i < 9; i++) {
+                    textGraphics.putString(getMiddleColValue() - 8, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+                }
+            }
+            for (int i = 0; i < 9; i++) {
+                textGraphics.putString(getMiddleColValue()+5, i + 3, Digit.values()[GameVariables.points % 10].getRow(i), SGR.BOLD, SGR.BLINK);
+            }
+
             screen.refresh();
         }
     }
@@ -266,7 +313,7 @@ public class View {
                 KeyStroke keyStroke = screen.pollInput();
                 if (keyStroke != null && (keyStroke.getKeyType() == KeyType.ArrowLeft || keyStroke.getKeyType() == KeyType.ArrowRight
                         || keyStroke.getKeyType() == KeyType.Escape || keyStroke.getKeyType() == KeyType.ArrowUp
-                || keyStroke.getKeyType() == KeyType.ArrowDown)) {
+                        || keyStroke.getKeyType() == KeyType.ArrowDown)) {
                     return keyStroke.getKeyType();
                 }
             } catch (InterruptedException e) {
