@@ -20,6 +20,7 @@ public abstract class Enemy {
 
     public int getPositionX() {
         return position.getX();
+
     }
 
     public int getPositionY() {
