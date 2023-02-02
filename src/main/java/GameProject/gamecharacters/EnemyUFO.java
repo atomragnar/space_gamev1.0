@@ -12,7 +12,7 @@ public class EnemyUFO extends Enemy {
 
 
     public EnemyUFO() {
-        super(new Random().nextInt(46, 54), Main.view.getRowTopCutOff(),
+        super(new Random().nextInt(Main.view.getColLeftCutOff(), Main.view.getColRightCutOff()), Main.view.getRowTopCutOff(),
                 new String[]{">|<"});
         this.side = 0;
         addEnemy();
