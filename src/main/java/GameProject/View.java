@@ -357,10 +357,10 @@ public class View {
         int left = getColLeftCutOff();
         int start = terminalSize.getRows();
         int middleRowValue = start / 2;
-        for (int i = start; i > middleRowValue; i--) {
+        for (int i = start; i >= middleRowValue; i--) {
             right--;
             left++;
-            for (int j = left; j < right; j++) {
+            for (int j = left; j <= right; j++) {
                 int random = new Random().nextInt(left, right);
                 if (random == j) {
                     screen.setCharacter(j, i, MIDDLE_LINE_SPACE);
@@ -377,7 +377,7 @@ public class View {
         int middleCol = getMiddleColValue();
 
         for (int i = rowCutoffTop; i <= rowCutoffBottom; i++) {
-            for (int j = 0; j < middleCol; j++) {
+            for (int j = 0; j <= middleCol; j++) {
                 int random = new Random().nextInt(0, middleCol);
                 if (random == j) {
                     screen.setCharacter(j, i, MIDDLE_LEFT);
@@ -420,7 +420,7 @@ public class View {
                     screen.setCharacter(j, i, TextCharAllBlack);
                 }
             }
-            columns += 2;
+            columns ++;
         }
     }
 
@@ -428,8 +428,8 @@ public class View {
         int row_cutOffBottom = getRowBottomCutOff();
         int columns = getColLeftCutOff();
         int rows = terminalSize.getRows();
-        for (int i = row_cutOffBottom; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+        for (int i = row_cutOffBottom; i <= rows; i++) {
+            for (int j = 0; j <= columns; j++) {
                 int random = new Random().nextInt(0, columns);
                 if (random == j) {
                     screen.setCharacter(j, i, LEFT_SIDE_SPACE);
@@ -437,7 +437,7 @@ public class View {
                     screen.setCharacter(j, i, TextCharAllBlack);
                 }
             }
-            columns += 2;
+            columns ++;
         }
     }
 
@@ -454,7 +454,7 @@ public class View {
                     screen.setCharacter(j, i, TextCharAllBlack);
                 }
             }
-            columns -= 2;
+            columns --;
         }
     }
 
@@ -473,7 +473,7 @@ public class View {
                     screen.setCharacter(j, i, TextCharAllBlack);
                 }
             }
-            columns -= 2;
+            columns --;
         }
     }
 
