@@ -7,8 +7,15 @@ public abstract class Enemy {
 
     Position position;
 
-    public Enemy(int x, int y) {
+    private String [] enemyString;
+
+    public Enemy(int x, int y,String [] enemyString) {
         this.position = new Position(x, y);
+        this.enemyString = enemyString;
+    }
+
+    public String[] getEnemyString() {
+        return enemyString;
     }
 
     public int getPositionX() {

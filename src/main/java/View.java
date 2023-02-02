@@ -144,15 +144,29 @@ public class View {
     }
 
     public void spawnEnemy(Enemy enemyShip){
-        TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
-        screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
+        int y = enemyShip.getPositionY();
+        int x = enemyShip.getPositionX();
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+        for (var enemyString : enemyShip.getEnemyString()) {
+            textGraphics.putString(x, y, enemyString,SGR.BOLD);
+            y++;
+        }
         GameVariables.isEnemySpawned = true;
 
     }
 
     public void drawEnemy(Enemy enemyShip) {
-        TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
-        screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
+        int y = enemyShip.getPositionY();
+        int x = enemyShip.getPositionX();
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+
+        for (var enemyString : enemyShip.getEnemyString()) {
+            textGraphics.putString(x, y, enemyString,SGR.BOLD);
+            y++;
+        }
+
         if (enemyShip.getPositionY() == terminalSize.getRows()) {
             GameVariables.isEnemySpawned = false;
             GameVariables.points++;
