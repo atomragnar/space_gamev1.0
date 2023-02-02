@@ -3,7 +3,14 @@ package gamecharacters;
 import static gameutils.Constants.*;
 import gameutils.Position;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public abstract class Enemy {
+
+    public static Set<Position> GameState = new HashSet<>();
 
     Position position;
 
