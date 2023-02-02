@@ -25,7 +25,9 @@ import static gameutils.Constants.*;
 
 public class View {
 
+
     private int playerPreviousY = 0;
+
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
@@ -80,7 +82,16 @@ public class View {
     public void drawPointsCount() {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
-        textGraphics.putString(getMiddleColValue(), 5, String.valueOf(GameVariables.points), SGR.BOLD, SGR.BLINK);
+
+        textGraphics.putString(MIDDLE-5, 1, "Score:", SGR.BOLD, SGR.BLINK);
+        if(GameVariables.points>9) {
+            for (int i = 0; i < 9; i++) {
+                textGraphics.putString(MIDDLE - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+            }
+        }
+            for (int i = 0; i < 9; i++) {
+                textGraphics.putString(MIDDLE-6, i+3, Digit.values()[GameVariables.points%10].getRow(i), SGR.BOLD, SGR.BLINK);
+            }
     }
 
 
@@ -158,16 +169,36 @@ public class View {
 
     }
 
+
+    public void spawnEnemy(Enemy enemyShip){
+        int y = enemyShip.getPositionY();
+        int x = enemyShip.getPositionX();
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+        for (var enemyString : enemyShip.getEnemyString()) {
+            textGraphics.putString(x, y, enemyString,SGR.BOLD);
+            y++;
+        }
+
     public void spawnEnemy(Enemy enemyShip) {
         TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
         screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
+
         GameVariables.isEnemySpawned = true;
 
     }
 
     public void drawEnemy(Enemy enemyShip) {
-        TextCharacter enemyGraphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.MAGENTA_BRIGHT);
-        screen.setCharacter(enemyShip.getPositionX(), enemyShip.getPositionY(), enemyGraphics);
+        int y = enemyShip.getPositionY();
+        int x = enemyShip.getPositionX();
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+
+        for (var enemyString : enemyShip.getEnemyString()) {
+            textGraphics.putString(x, y, enemyString,SGR.BOLD);
+            y++;
+        }
+
         if (enemyShip.getPositionY() == terminalSize.getRows()) {
             GameVariables.isEnemySpawned = false;
             GameVariables.points++;

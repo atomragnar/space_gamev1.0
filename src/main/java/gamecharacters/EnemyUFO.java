@@ -7,10 +7,15 @@ public class EnemyUFO extends Enemy {
 
     private int side;
 
+
+
+
     public EnemyUFO() {
-        super(new Random().nextInt(46, 54), CUT_OFF_ROW);
+        super(new Random().nextInt(46, 54), CUT_OFF_ROW,
+                new String[]{">|<"});
         this.side = 0;
         addEnemy();
+
     }
 
     public void addEnemy() {
