@@ -25,7 +25,7 @@ import static gameutils.Constants.*;
 
 public class View {
 
-
+    private int playerPreviousY = 0;
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
@@ -133,26 +133,24 @@ public class View {
     }
 
     public void drawHero() throws IOException {
-        //TextCharacter heroShip = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
-        screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), Main.player.getGraphics());
-//        int y = Main.player.getPlayerY();
-//        int x = Main.player.getPlayerX();
-//        TextGraphics textGraphics = screen.newTextGraphics();
-      /*  textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
+        /*screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), Main.player.getGraphics());*/
+        int y = Main.player.getPlayerY();
+        int x = Main.player.getPlayerX();
+        if (playerPreviousY == 0) {
+            playerPreviousY = y;
+        }
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
         textGraphics.putString(x, y, Main.player.getPlayerString1(), SGR.BOLD);
         textGraphics.putString(x, y + 1, Main.player.getPlayerString2(), SGR.BOLD);
         textGraphics.putString(x, y + 2, Main.player.getPlayerString3(), SGR.BOLD);
         textGraphics.putString(x, y + 3, Main.player.getPlayerString4(), SGR.BOLD);
-        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
         textGraphics.putString(x, y + 4, Main.player.getPlayerstring5(), SGR.BOLD);
-        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
-        textGraphics.putString(x, y + 5, Main.player.getPlayerstring6(), SGR.BOLD);
-        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
-        textGraphics.putString(x, y + 6, Main.player.getPlayerstring7(), SGR.BOLD);
-        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
-        textGraphics.putString(x, y + 7, Main.player.getPlayerstring8(), SGR.BOLD);
-        textGraphics.setForegroundColor(TextColor.ANSI.WHITE_BRIGHT);
-        textGraphics.putString(x, y + 8, Main.player.getPlayerstring9(), SGR.BOLD);*/
+        if (y < playerPreviousY) {
+            textGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
+            textGraphics.putString(x, y + 5, Main.player.getPlayerstring6(), SGR.BOLD);
+        }
+        playerPreviousY = y;
         if (GameVariables.checkDeath()) {
             printGameOver();
             this.terminal.close();
@@ -236,38 +234,6 @@ public class View {
                 random.nextInt(terminalSize.getColumns()),
                 random.nextInt(terminalSize.getRows()));
     }*/
-
-
-    // @TODO hur man kan skapa box i skarmen eventuellt for poang rakning etc
-    /*public void drawBox() throws IOException {
-
-        String sizeLabel = "Terminal Size: " + terminalSize;
-        TerminalPosition labelBoxTopLeft = new TerminalPosition(1, 1);
-        TerminalSize labelBoxSize = new TerminalSize(sizeLabel.length() + 2, 3);
-        TerminalPosition labelBoxTopRightCorner = labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 1);
-        TextGraphics textGraphics = screen.newTextGraphics();
-        //This isn't really needed as we are overwriting everything below anyway, but just for demonstrative purpose
-        textGraphics.fillRectangle(labelBoxTopLeft, labelBoxSize, ' ');
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
-        textGraphics.setCharacter(labelBoxTopLeft, Symbols.DOUBLE_LINE_TOP_LEFT_CORNER);
-        textGraphics.setCharacter(labelBoxTopLeft.withRelativeRow(1), Symbols.DOUBLE_LINE_VERTICAL);
-        textGraphics.setCharacter(labelBoxTopLeft.withRelativeRow(2), Symbols.DOUBLE_LINE_BOTTOM_LEFT_CORNER);
-        textGraphics.setCharacter(labelBoxTopRightCorner, Symbols.DOUBLE_LINE_TOP_RIGHT_CORNER);
-        textGraphics.setCharacter(labelBoxTopRightCorner.withRelativeRow(1), Symbols.DOUBLE_LINE_VERTICAL);
-        textGraphics.setCharacter(labelBoxTopRightCorner.withRelativeRow(2), Symbols.DOUBLE_LINE_BOTTOM_RIGHT_CORNER);
-        textGraphics.putString(labelBoxTopLeft.withRelative(1, 1), sizeLabel);
-        screen.refresh();
-        Thread.yield();
-
-    }*/
-
 
     public KeyType getKeyInput() throws IOException {
         while (true) {

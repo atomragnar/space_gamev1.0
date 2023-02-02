@@ -11,16 +11,12 @@ public class Player {
     private final static int PLAYER_START_COLUMN = 45;
     private final static int PLAYER_START_ROW = 35;
 
-    /*String playerString1 = "                  __|__";
-    String playerString2 = "                   _|_";
-    String playerString3 = "                  /#_#\\";
-    String playerString4 = "               __/#(_)#\\__";
-    String playerstring5 = "          ____/_ ======= _\\____";
-    String playerstring6 = " ________/#_#\\(_)_______(_)/#_#\\________";
-    String playerstring7 = "<___+____#(_)#|#/###_###\\#|#(_)#____+___>";
-    String playerstring8 = "  O O O  \\___/ |###(_)###| \\___/ O O O";
-    String playerstring9 = "             \\__\\_______/__/";*/
-
+    String playerString1 = "   /\\";
+    String playerString2 = "  (||)";
+    String playerString3 = "  (||)";
+    String playerString4 = " /|/\\|\\";
+    String playerstring5 = "/_||||_\\";
+    String playerstring6 = "    #";
     TextCharacter graphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
 
     public TextCharacter getGraphics() {
@@ -28,6 +24,30 @@ public class Player {
     }
 
     private Position position;
+
+    public String getPlayerString1() {
+        return playerString1;
+    }
+
+    public String getPlayerString2() {
+        return playerString2;
+    }
+
+    public String getPlayerString3() {
+        return playerString3;
+    }
+
+    public String getPlayerString4() {
+        return playerString4;
+    }
+
+    public String getPlayerstring5() {
+        return playerstring5;
+    }
+
+    public String getPlayerstring6() {
+        return playerstring6;
+    }
 
     public Player() {
         this.position = new Position(PLAYER_START_COLUMN, PLAYER_START_ROW);
@@ -80,10 +100,3 @@ public class Player {
 
 
 }
-
-/*
-
-//-A-\\
-  ___---=======---___
-          (=__\   /.. ..\   /__=)
-          ---\__O__/---*/
