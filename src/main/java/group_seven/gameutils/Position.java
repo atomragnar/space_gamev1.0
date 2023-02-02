@@ -1,4 +1,4 @@
-package gameutils;
+package group_seven.gameutils;
 
 import java.util.Objects;
 

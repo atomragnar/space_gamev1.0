@@ -1,3 +1,5 @@
+package GameProject;
+
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -52,7 +54,7 @@ public enum Digit {
 
     public static void main(String[] args) {
         for (Digit d : Digit.values()) {
-            System.out.println("Digit : " + d.ordinal());
+            System.out.println("GameProject.Digit : " + d.ordinal());
             System.out.println(d);
         }
     }

@@ -1,8 +1,7 @@
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.input.KeyType;
-import gamecharacters.Enemy;
-import gameutils.Position;
+package GameProject;
+
+import GameProject.gamecharacters.Enemy;
+import group_seven.gameutils.Position;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.Map;
 public class GameVariables {
 
 
-    public static int points = 10;
+    public static int points = 0;
 
     public static final Map<Integer,String> pointsCharacterTable = new HashMap<>(){{
         put(1,"ONE");

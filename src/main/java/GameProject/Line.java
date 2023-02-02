@@ -1,3 +1,5 @@
+package GameProject;
+
 public enum Line {
     FULL (" ------- "),
     EMPTY("         "),

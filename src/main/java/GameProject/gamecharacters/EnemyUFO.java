@@ -1,7 +1,8 @@
-package gamecharacters;
+package GameProject.gamecharacters;
 import java.util.Random;
 
-import static gameutils.Constants.*;
+import static group_seven.gameutils.Constants.*;
+import GameProject.Main;
 
 public class EnemyUFO extends Enemy {
 
@@ -11,7 +12,7 @@ public class EnemyUFO extends Enemy {
 
 
     public EnemyUFO() {
-        super(new Random().nextInt(46, 54), CUT_OFF_ROW,
+        super(new Random().nextInt(46, 54), Main.view.getRowTopCutOff(),
                 new String[]{">|<"});
         this.side = 0;
         addEnemy();

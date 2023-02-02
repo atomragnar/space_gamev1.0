@@ -1,10 +1,10 @@
-package gamecharacters;
+package GameProject.gamecharacters;
 
 import com.googlecode.lanterna.TextCharacter;
-import static gameutils.Constants.*;
 
 import com.googlecode.lanterna.TextColor;
-import gameutils.Position;
+import group_seven.gameutils.Position;
+import  GameProject.Main;
 
 public class Player {
 
@@ -66,28 +66,32 @@ public class Player {
     }
 
     public void moveLeft() {
-        if (position.getX() > 10) {
+        int leftLimt = Main.view.getColLeftCutOff();
+        if (position.getX() > leftLimt) {
             int x = position.getX() - 1;
             position.updatePositon(x, position.getY());
         }
     }
 
     public void moveRight() {
-        if (position.getX() < 80) {
+        int rightLimit = Main.view.getColRightCutOff();
+        if (position.getX() < rightLimit) {
             int x = position.getX() + 1;
             position.updatePositon(x, position.getY());
         }
     }
 
     public void moveUp() {
-        if (position.getY() > 5) {
+        int rowUpLimit = Main.view.getRowTopCutOff();
+        if (position.getY() > rowUpLimit) {
             int y = position.getY() - 1;
             position.updatePositon(position.getX(), y);
         }
     }
 
     public void moveDown() {
-        if (position.getY() < 70) {
+        int rows = Main.view.getTerminalSize().getRows();
+        if (position.getY() < rows) {
             int y = position.getY() + 1;
             position.updatePositon(position.getX(), y);
         }

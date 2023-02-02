@@ -1,4 +1,4 @@
-package gameutils;
+package group_seven.gameutils;
 
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;

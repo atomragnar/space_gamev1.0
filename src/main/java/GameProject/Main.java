@@ -1,6 +1,8 @@
-import gamecharacters.Enemy;
-import gamecharacters.EnemyUFO;
-import gamecharacters.Player;
+package GameProject;
+
+import GameProject.gamecharacters.Enemy;
+import GameProject.gamecharacters.EnemyUFO;
+import GameProject.gamecharacters.Player;
 
 import java.io.IOException;
 
@@ -16,13 +18,13 @@ public class Main implements Runnable {
 
     }
     public static void main(String[] args) throws IOException {
+        view = new View();
 
         Main main = new Main();
         player = new Player();
         boolean gameOn = true;
 
 
-        view = new View();
 
         view.printStartScreen();
         while (gameOn) {

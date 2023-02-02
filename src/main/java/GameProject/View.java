@@ -1,5 +1,7 @@
-import gamecharacters.Enemy;
-import gamecharacters.EnemyUFO;
+package GameProject;
+
+import GameProject.gamecharacters.Enemy;
+import GameProject.gamecharacters.EnemyUFO;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -8,17 +10,14 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import gameutils.GameGraphics;
+import group_seven.gameutils.GameGraphics;
 
-import static gameutils.Constants.*;
-import static gameutils.GameGraphics.*;
+import static group_seven.gameutils.Constants.*;
+import static group_seven.gameutils.GameGraphics.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import static gameutils.Constants.*;
 
 // TODO kan behova satta en method for att uppdatera terminalsize lopande.
 
@@ -36,7 +35,7 @@ public class View {
 
     public View() throws IOException {
         terminal = null;  // 168 80
-        this.terminalSize = new TerminalSize(100, 40);
+        this.terminalSize = new TerminalSize(168, 66);
         terminal = defaultTerminalFactory
                 .setInitialTerminalSize(this.terminalSize)
                 .createTerminal();
@@ -83,14 +82,14 @@ public class View {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
 
-        textGraphics.putString(MIDDLE-5, 1, "Score:", SGR.BOLD, SGR.BLINK);
+        textGraphics.putString(getMiddleColValue()-5, 1, "Score:", SGR.BOLD, SGR.BLINK);
         if(GameVariables.points>9) {
             for (int i = 0; i < 9; i++) {
-                textGraphics.putString(MIDDLE - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+                textGraphics.putString(getMiddleColValue() - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
             }
         }
             for (int i = 0; i < 9; i++) {
-                textGraphics.putString(MIDDLE-6, i+3, Digit.values()[GameVariables.points%10].getRow(i), SGR.BOLD, SGR.BLINK);
+                textGraphics.putString(getMiddleColValue()-6, i+3, Digit.values()[GameVariables.points%10].getRow(i), SGR.BOLD, SGR.BLINK);
             }
     }
 
@@ -144,7 +143,7 @@ public class View {
     }
 
     public void drawHero() throws IOException {
-        /*screen.setCharacter(Main.player.getPlayerX(), Main.player.getPlayerY(), Main.player.getGraphics());*/
+        /*screen.setCharacter(GameProject.Main.player.getPlayerX(), GameProject.Main.player.getPlayerY(), GameProject.Main.player.getGraphics());*/
         int y = Main.player.getPlayerY();
         int x = Main.player.getPlayerX();
         if (playerPreviousY == 0) {
@@ -218,7 +217,7 @@ public class View {
     public void printStartScreen() throws IOException {
         terminal.clearScreen();
         screen.refresh();
-        List<String> startScreen = GameGraphics.readFile("src/main/java/gameutils/introscreen.txt");
+        List<String> startScreen = GameGraphics.readFile("src/main/java/group_seven/gameutils/introscreen.txt");
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 4000) {
             int row = 5;
@@ -237,7 +236,7 @@ public class View {
     public void printGameOver() throws IOException {
         terminal.clearScreen();
         screen.refresh();
-        List<String> startScreen = GameGraphics.readFile("src/main/java/gameutils/GameOver.txt");
+        List<String> startScreen = GameGraphics.readFile("src/main/java/group_seven/gameutils/GameOver.txt");
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 4000) {
             int row = 15;
@@ -280,7 +279,7 @@ public class View {
         TerminalSize newSize = screen.doResizeIfNecessary();
         if(newSize != null) {
             terminalSize = newSize;
-            GameVariables.scaleBorders(terminalSize.getColumns());
+            GameProject.GameVariables.scaleBorders(terminalSize.getColumns());
         }
     }*/
     // @TODO Behover uppdateras sa man helt stanger av spelet
@@ -466,7 +465,9 @@ public class View {
         return terminalSize.getColumns() / 2;
     }
 
-
+    public TerminalSize getTerminalSize() {
+        return terminalSize;
+    }
 }
 
 
