@@ -16,7 +16,7 @@ public class Player {
     String playerString3 = "  (||)";
     String playerString4 = " /|/\\|\\";
     String playerstring5 = "/_||||_\\";
-    String playerstring6 = "    #";
+    String playerstring6 = " #    #";
     TextCharacter graphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
 
     public TextCharacter getGraphics() {

@@ -1,5 +1,6 @@
 package GameProject;
 
+import GameProject.gamecharacters.CelestialEnemy;
 import GameProject.gamecharacters.Enemy;
 import GameProject.gamecharacters.EnemyUFO;
 import com.googlecode.lanterna.*;
@@ -17,6 +18,7 @@ import static group_seven.gameutils.GameGraphics.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 // TODO kan behova satta en method for att uppdatera terminalsize lopande.
@@ -25,15 +27,16 @@ import java.util.Random;
 public class View {
 
 
-    static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private int playerPreviousY = 0;
+
+    static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
     private TerminalSize terminalSize;
 
 
     public View() throws IOException {
-        terminal = null;  // 168 66
+        terminal = null;  // 168 80
         this.terminalSize = new TerminalSize(168, 66);
         terminal = defaultTerminalFactory
                 .setInitialTerminalSize(this.terminalSize)
@@ -45,6 +48,7 @@ public class View {
         screen.startScreen();
 
     }
+
 
     public void drawLinesGame() {
         int right = getColRightCutOff();
@@ -80,68 +84,37 @@ public class View {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
 
-        textGraphics.putString(getMiddleColValue(), 1, "Score:", SGR.BOLD, SGR.BLINK);
-        int middleOneDigit = getMiddleColValue();
+        textGraphics.putString(getMiddleColValue() - 5, 1, "Score:", SGR.BOLD, SGR.BLINK);
         if (GameVariables.points > 9) {
-
             for (int i = 0; i < 9; i++) {
-                textGraphics.putString(middleOneDigit - 8, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+                textGraphics.putString(getMiddleColValue() - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
             }
-            middleOneDigit += 5;
         }
         for (int i = 0; i < 9; i++) {
-            textGraphics.putString(middleOneDigit, i + 3, Digit.values()[GameVariables.points % 10].getRow(i), SGR.BOLD, SGR.BLINK);
+            textGraphics.putString(getMiddleColValue() - 6, i + 3, Digit.values()[GameVariables.points % 10].getRow(i), SGR.BOLD, SGR.BLINK);
         }
-
-        if (GameVariables.points > 0 && GameVariables.points % 10 == 0) {
-            String[] planet = new String[7];
-            planet[0] = "          ,MMM8&&&.";
-            planet[1] = "      _...MMMMM88&&&&..._";
-            planet[2] = " .::'''MMMMM88&&&&&&'''::.";
-            planet[3] = " ::     MMMMM88&&&&&&     ::";
-            planet[4] = " '::....MMMMM88&&&&&&....::'";
-            planet[5] = " `    ''''MMMMM88&&&&''''`";
-            planet[6] = "         'MMM8&&&'";
-            int i = 0;
-            for (var string : planet) {
-                textGraphics.putString(middleOneDigit - 45, i + 3, string, SGR.BOLD, SGR.BLINK);
-                i++;
-            }
-        } else if (GameVariables.points > 0 && GameVariables.points % 5 == 0) {
-            String[] planet = new String[8];
-            planet[0] = "            ,";
-            planet[1] = "        \\  :  /";
-            planet[2] = "`      . __/ \\__ .'";
-            planet[3] = "      _ _\\     /_ _";
-            planet[4] = "         /_   _\\";
-            planet[5] = ".'         \\ /  `.";
-            planet[6] = "         /  :  \\    jbf";
-            planet[7] = "             .     ";
-            int i = 0;
-            for (var string : planet) {
-                textGraphics.putString(middleOneDigit + 45, i + 3, string, SGR.BOLD, SGR.BLINK);
-                i++;
-            }
-
-
     }
 
-}
 
-
-    public void drawScreen(Enemy enemyShip) throws IOException {
+    public void drawScreen(List<Enemy> listOfEnemies) throws IOException {
         drawSpace();
         screen.refresh();
         drawPointsCount();
         screen.refresh();
         drawHero();
         screen.refresh();
-        if (!GameVariables.isEnemySpawned) {
-            enemyShip = new EnemyUFO();
-            spawnEnemy(enemyShip);
+        if (GameVariables.isEnemySpawned) {
+            int n = 0;
+            for (Enemy enemyShip : listOfEnemies) {
+                if (Main.counter % 3 == 0) {
+                    enemyShip.move();
+                } else if (Main.counter % 10 == 0) {
+                    enemyShip.move();
+                }
+            }
+            drawEnemy(listOfEnemies);
         } else {
-            enemyShip.move();
-            drawEnemy(enemyShip);
+            spawnEnemy(listOfEnemies);
         }
         screen.refresh();
     }
@@ -192,7 +165,7 @@ public class View {
         textGraphics.putString(x, y + 3, Main.player.getPlayerString4(), SGR.BOLD);
         textGraphics.putString(x, y + 4, Main.player.getPlayerstring5(), SGR.BOLD);
         if (y < playerPreviousY) {
-            textGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
+            textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
             textGraphics.putString(x, y + 5, Main.player.getPlayerstring6(), SGR.BOLD);
         }
         playerPreviousY = y;
@@ -204,34 +177,83 @@ public class View {
     }
 
 
-    public void spawnEnemy(Enemy enemyShip) {
-        int y = enemyShip.getPositionY();
-        int x = enemyShip.getPositionX();
-        TextGraphics textGraphics = screen.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
-        for (var enemyString : enemyShip.getEnemyString()) {
-            textGraphics.putString(x, y, enemyString, SGR.BOLD);
-            y++;
+    public void spawnEnemy(List<Enemy> listOfEnemies) {
+
+        for (int i = 0; i < 3; i++) {
+
+            Enemy enemyShip = listOfEnemies.get(i);
+
+            if (enemyShip instanceof EnemyUFO) {
+
+                int y = enemyShip.getPositionY();
+                int x = enemyShip.getPositionX();
+
+                TextGraphics textGraphics = screen.newTextGraphics();
+                textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+
+                for (var enemyString : enemyShip.getEnemyString()) {
+                    textGraphics.putString(x, y, enemyString, SGR.BOLD);
+                    y++;
+                }
+
+            } else if (enemyShip instanceof CelestialEnemy) {
+
+                int y = enemyShip.getPositionY();
+                int x = enemyShip.getPositionX();
+
+                TextGraphics textGraphics = screen.newTextGraphics();
+                textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+
+                for (var enemyString : enemyShip.getEnemyString()) {
+                    textGraphics.putString(x, y, enemyString, SGR.BOLD);
+                    y++;
+                }
+            }
         }
         GameVariables.isEnemySpawned = true;
     }
 
-    public void drawEnemy(Enemy enemyShip) {
-        int y = enemyShip.getPositionY();
-        int x = enemyShip.getPositionX();
-        TextGraphics textGraphics = screen.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+    public void drawEnemy(List<Enemy> listOfEnemies) {
 
-        for (var enemyString : enemyShip.getEnemyString()) {
-            textGraphics.putString(x, y, enemyString, SGR.BOLD);
-            y++;
-        }
+        for (int i = 0; i < 3; i++) {
 
-        if (enemyShip.getPositionY() == terminalSize.getRows()) {
-            GameVariables.isEnemySpawned = false;
-            GameVariables.points++;
+            Enemy enemyShip = listOfEnemies.get(i);
+
+            if (enemyShip instanceof EnemyUFO) {
+
+                int y = enemyShip.getPositionY();
+                int x = enemyShip.getPositionX();
+
+                TextGraphics textGraphics = screen.newTextGraphics();
+                textGraphics.setForegroundColor(TextColor.ANSI.RED_BRIGHT);
+
+                for (var enemyString : enemyShip.getEnemyString()) {
+                    textGraphics.putString(x, y, enemyString, SGR.BOLD);
+                    y++;
+                }
+
+            } else if (enemyShip instanceof CelestialEnemy) {
+
+                int y = enemyShip.getPositionY();
+                int x = enemyShip.getPositionX();
+
+                TextGraphics textGraphics = screen.newTextGraphics();
+                textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+
+                for (var enemyString : enemyShip.getEnemyString()) {
+                    textGraphics.putString(x, y, enemyString, SGR.BOLD);
+                    y++;
+                }
+
+            }
+
+            if (enemyShip.getPositionY() == terminalSize.getRows()) {
+                listOfEnemies.remove(i);
+                GameVariables.points++;
+            }
         }
     }
+
 
     // @TODO kan man anvanda som grund till en Game over skarm som sen skiftar
     public void modifyScreen() throws IOException {
@@ -283,18 +305,6 @@ public class View {
                 textGraphics.putString(col, row, s, SGR.BOLD);
                 row++;
             }
-
-            textGraphics.putString(getMiddleColValue(), 1, "Score:", SGR.BOLD, SGR.BLINK);
-            if (GameVariables.points > 9) {
-
-                for (int i = 0; i < 9; i++) {
-                    textGraphics.putString(getMiddleColValue() - 8, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
-                }
-            }
-            for (int i = 0; i < 9; i++) {
-                textGraphics.putString(getMiddleColValue()+5, i + 3, Digit.values()[GameVariables.points % 10].getRow(i), SGR.BOLD, SGR.BLINK);
-            }
-
             screen.refresh();
         }
     }
@@ -411,8 +421,8 @@ public class View {
     public void drawTopLeftCornerLines() {
         int rowCutOffTop = getRowTopCutOff();
         int columns = getColLeftCutOff();
-        for (int i = 0; i < rowCutOffTop; i++) {
-            for (int j = 0; j < columns; j++) {
+        for (int i = 0; i <= rowCutOffTop; i++) {
+            for (int j = 0; j <= columns; j++) {
                 int random = new Random().nextInt(0, columns);
                 if (random == j) {
                     screen.setCharacter(j, i, RIGHT_SIDE_SPACE);
@@ -491,7 +501,7 @@ public class View {
 
     public int getColLeftCutOff() {
         // 20% just nu
-        return terminalSize.getColumns() / 5;
+        return terminalSize.getColumns() / 7;
     }
 
     public int getColRightCutOff() {
