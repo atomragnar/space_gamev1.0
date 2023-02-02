@@ -24,11 +24,14 @@ public class Main implements Runnable {
 
         view = new View();
 
+        view.printStartScreen();
         while (gameOn) {
             main.start();
             switch (view.getKeyInput()) {
                 case ArrowLeft  -> player.moveLeft();
                 case ArrowRight -> player.moveRight();
+                case ArrowDown -> player.moveDown();
+                case ArrowUp -> player.moveUp();
                 case Escape -> gameOn = false;
             }
         }
@@ -46,7 +49,7 @@ public class Main implements Runnable {
     public void run() {
         while (run) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(30);
                 if (enemy == null || !GameVariables.isEnemySpawned) {
                     enemy = new EnemyUFO();
                 }

@@ -8,4 +8,15 @@ public class Constants {
 
     public final static int MIDDLE = 50;
 
+    // Below are constants for space test
+
+    public static int COLUMN_CUTOFF_LEFT = 20;
+    public static int COLUMN_CUTOFF_RIGHT = 80;
+
+    public static int ROW_CUTOFF_TOP = 15;
+
+    public final static int ROW_CUTOFF_BOTTOM = 25;
+
+    public final static int MIDDLE_ROW_VALUE = 20;
+
 }
