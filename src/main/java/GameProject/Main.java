@@ -1,12 +1,8 @@
-import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.TextColor.*;
-import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
+package GameProject;
+
+import GameProject.gamecharacters.Enemy;
+import GameProject.gamecharacters.EnemyUFO;
+import GameProject.gamecharacters.Player;
 
 import java.io.IOException;
 
@@ -15,25 +11,29 @@ public class Main implements Runnable {
     public static boolean run = false;
     public Thread thread;
     public static View view = null;
+    public static Player player = null;
+    public static Enemy enemy = null;
 
     public Main() {
 
     }
     public static void main(String[] args) throws IOException {
+        view = new View();
+
         Main main = new Main();
+        player = new Player();
         boolean gameOn = true;
 
-        view = new View();
-        GameVariables.setInitialsLimits(view.getColumns());
 
+
+        view.printStartScreen();
         while (gameOn) {
-            if (view.isResizeNeeded()) {
-                // hantera resize
-            }
             main.start();
             switch (view.getKeyInput()) {
-                case ArrowLeft -> GameVariables.moveLeft();
-                case ArrowRight -> GameVariables.moveRight();
+                case ArrowLeft  -> player.moveLeft();
+                case ArrowRight -> player.moveRight();
+                case ArrowDown -> player.moveDown();
+                case ArrowUp -> player.moveUp();
                 case Escape -> gameOn = false;
             }
         }
@@ -51,8 +51,11 @@ public class Main implements Runnable {
     public void run() {
         while (run) {
             try {
-                Thread.sleep(200);
-                view.drawScreen();
+                Thread.sleep(30);
+                if (enemy == null || !GameVariables.isEnemySpawned) {
+                    enemy = new EnemyUFO();
+                }
+                view.drawScreen(enemy);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
