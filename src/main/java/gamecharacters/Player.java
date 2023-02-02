@@ -2,14 +2,16 @@ package gamecharacters;
 
 import com.googlecode.lanterna.TextCharacter;
 import static gameutils.Constants.*;
+
+import com.googlecode.lanterna.TextColor;
 import gameutils.Position;
 
 public class Player {
 
     private final static int PLAYER_START_COLUMN = 45;
-    private final static int PLAYER_START_ROW = 18;
+    private final static int PLAYER_START_ROW = 35;
 
-    String playerString1 = "                  __|__";
+    /*String playerString1 = "                  __|__";
     String playerString2 = "                   _|_";
     String playerString3 = "                  /#_#\\";
     String playerString4 = "               __/#(_)#\\__";
@@ -17,7 +19,13 @@ public class Player {
     String playerstring6 = " ________/#_#\\(_)_______(_)/#_#\\________";
     String playerstring7 = "<___+____#(_)#|#/###_###\\#|#(_)#____+___>";
     String playerstring8 = "  O O O  \\___/ |###(_)###| \\___/ O O O";
-    String playerstring9 = "             \\__\\_______/__/";
+    String playerstring9 = "             \\__\\_______/__/";*/
+
+    TextCharacter graphics = new TextCharacter('^', TextColor.ANSI.CYAN_BRIGHT, TextColor.ANSI.YELLOW_BRIGHT);
+
+    public TextCharacter getGraphics() {
+        return graphics;
+    }
 
     private Position position;
 
@@ -25,41 +33,8 @@ public class Player {
         this.position = new Position(PLAYER_START_COLUMN, PLAYER_START_ROW);
     }
 
-    public String getPlayerstring6() {
-        return playerstring6;
-    }
-
-    public String getPlayerstring7() {
-        return playerstring7;
-    }
-
-    public String getPlayerstring8() {
-        return playerstring8;
-    }
-
-    public String getPlayerstring9() {
-        return playerstring9;
-    }
-
-    public String getPlayerString1() {
-        return playerString1;
-    }
-
-    public String getPlayerString2() {
-        return playerString2;
-    }
-
-    public String getPlayerString3() {
-        return playerString3;
-    }
-
-
-    public String getPlayerString4() {
-        return playerString4;
-    }
-
-    public String getPlayerstring5() {
-        return playerstring5;
+    public Position getPosition() {
+        return position;
     }
 
     public int getPlayerX() {
@@ -97,6 +72,7 @@ public class Player {
             position.updatePositon(position.getX(), y);
         }
     }
+
 
     public boolean isPlayerHere(int x, int y) {
         return getPlayerX() == x && getPlayerY() == y;

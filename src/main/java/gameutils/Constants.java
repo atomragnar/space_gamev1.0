@@ -10,10 +10,10 @@ public class Constants {
 
     // Below are constants for space test
 
-    public final static int COLUMN_CUTOFF_LEFT = 20;
-    public final static int COLUMN_CUTOFF_RIGHT = 80;
+    public static int COLUMN_CUTOFF_LEFT = 20;
+    public static int COLUMN_CUTOFF_RIGHT = 80;
 
-    public final static int ROW_CUTOFF_TOP = 15;
+    public static int ROW_CUTOFF_TOP = 15;
 
     public final static int ROW_CUTOFF_BOTTOM = 25;
 
