@@ -31,6 +31,7 @@ public class Main implements Runnable {
         Main main = new Main();
         player = new Player();
         boolean gameOn = true;
+
         listOfEnemies = new ArrayList<>();
 
 
