@@ -18,7 +18,6 @@ import static group_seven.gameutils.GameGraphics.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
 
 // TODO kan behova satta en method for att uppdatera terminalsize lopande.

@@ -3,9 +3,6 @@ package GameProject;
 import GameProject.gamecharacters.Enemy;
 import group_seven.gameutils.Position;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GameVariables {
     public static int points = 0;
 

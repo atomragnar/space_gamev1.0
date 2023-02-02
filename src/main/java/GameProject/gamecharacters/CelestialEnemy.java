@@ -5,8 +5,6 @@ import group_seven.gameutils.Position;
 
 import java.util.Random;
 
-import static GameProject.gamecharacters.Enemy.GameState;
-
 public class CelestialEnemy extends Enemy {
 
     int counter;

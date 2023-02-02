@@ -1,7 +1,6 @@
 package GameProject.gamecharacters;
 import java.util.Random;
 
-import static group_seven.gameutils.Constants.*;
 import GameProject.Main;
 
 public class EnemyUFO extends Enemy {

@@ -3,8 +3,6 @@ package GameProject.gamecharacters;
 import group_seven.gameutils.Position;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 public abstract class Enemy {
