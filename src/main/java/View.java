@@ -19,7 +19,6 @@ import java.util.Random;
 
 public class View {
 
-
     static DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
     private Terminal terminal;
     private Screen screen;
@@ -76,7 +75,16 @@ public class View {
     public void drawPointsCount() {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
-        textGraphics.putString(MIDDLE, 5, String.valueOf(GameVariables.points), SGR.BOLD, SGR.BLINK);
+        textGraphics.putString(MIDDLE-5, 1, "Score:", SGR.BOLD, SGR.BLINK);
+        if(GameVariables.points>9) {
+            for (int i = 0; i < 9; i++) {
+                textGraphics.putString(MIDDLE - 15, i + 3, Digit.values()[GameVariables.points / 10].getRow(i), SGR.BOLD, SGR.BLINK);
+            }
+        }
+            for (int i = 0; i < 9; i++) {
+                textGraphics.putString(MIDDLE-6, i+3, Digit.values()[GameVariables.points%10].getRow(i), SGR.BOLD, SGR.BLINK);
+            }
+
     }
 
 
