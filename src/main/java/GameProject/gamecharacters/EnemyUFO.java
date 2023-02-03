@@ -30,7 +30,23 @@ public class EnemyUFO extends Enemy {
     @Override
     public void move() {
         side++;
-        if (side % 2 == 0) {
+        if(new Random().nextInt(46,54) < (50 + (new Random().nextInt(0,4)))){
+            if (side % 2 == 0) {
+                removeEnemy();
+                int x = this.getPositionX() + 1;
+                int y = this.getPositionY() + 1;
+                this.position.updatePositon(x, y);
+                addEnemy();
+            } else {
+                removeEnemy();
+                int x = this.getPositionX();
+                int y = this.getPositionY() + 1;
+                this.position.updatePositon(x, y);
+                addEnemy();
+            }
+        }
+        // original if-sats
+        else if (side % 2 == 0) {
             removeEnemy();
             int x = this.getPositionX() - 1;
             int y = this.getPositionY() + 1;
